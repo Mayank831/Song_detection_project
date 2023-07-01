@@ -1,0 +1,89 @@
+ 
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Song Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #E1ECC8;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+        }
+
+        .warning {
+            color: red;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background:#A0C49D
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Song Upload</h1>
+
+    <form method="post" action="{% url 'song_dashboard:song_upload' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="files" multiple><br>
+        <input type="submit" value="Upload">
+    </form>
+
+    {% if warning %}
+    <p class="warning">Warning: Total duration exceeds 10 minutes!</p>
+    {% endif %}
+
+    {% if files %}
+    <h2>Uploaded Files:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Size</th>
+                <th>Extension</th>
+                <th>Duration</th>
+                <th>Is Song</th>
+                <th>Play</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.file.name }}</td>
+                <td>{{ file.size }}</td>
+                <td>{{ file.extension }}</td>
+                <td>{{ file.duration }}</td>
+                <td>{{ file.is_song }}</td>
+                <td><audio controls><source src="{{ file.file.url }}"></audio></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</body>
+</html>
